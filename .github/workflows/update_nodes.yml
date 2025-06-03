@@ -8,10 +8,14 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+    permissions:  # 添加必要的权限
+      contents: write  # 允许写入仓库
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        persist-credentials: true  # 保存认证信息
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -26,8 +30,8 @@ jobs:
 
     - name: Commit changes
       run: |
-        git config --global user.name 'github-actions'
-        git config --global user.email 'github-actions@github.com'
+        git config --local user.name 'github-actions'
+        git config --local user.email 'github-actions@github.com'
         git add v2.txt
         git commit -m "Update nodes $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
         git push

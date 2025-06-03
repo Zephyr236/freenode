@@ -298,6 +298,19 @@ def convert_to_base64_and_save(input_file_path="raw.txt", output_file_path="v2.t
     except Exception as e:
         return f"未知错误: {str(e)}"
 
+def remove_blank_lines():
+    # 读取原始文件并移除非空行
+    """
+    移除文件中的空行
+    读取raw.txt文件，过滤掉所有空行后重新写入原文件
+    """
+    with open('raw.txt', 'r', encoding='utf-8') as file:
+        non_blank_lines = [line for line in file if line.strip() != ""]
+
+    # 覆盖写入原文件
+    with open('raw.txt', 'w', encoding='utf-8') as file:
+        file.writelines(non_blank_lines)
+
 # 使用示例
 if __name__ == "__main__":
     global proxies
@@ -353,4 +366,5 @@ if __name__ == "__main__":
     ]
     for i in source:
         crawler(i["target_url"], i["domain"], i["ext"])
+    remove_blank_lines()
     convert_to_base64_and_save()

@@ -7,7 +7,7 @@ on:
 
 jobs:
   update:
-    timeout-minutes: 5
+    timeout-minutes: 7
     runs-on: ubuntu-latest
     permissions:  # 添加必要的权限
       contents: write  # 允许写入仓库

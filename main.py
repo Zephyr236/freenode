@@ -363,6 +363,51 @@ if __name__ == "__main__":
             "domain": "node.nodeclash.com",
             "ext": ".txt",
         },
+        {
+            "target_url": "https://v2rayshare.org/free-node/",
+            "domain": "node.v2rayshare.org",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://v2rayshare.org/free-node/",
+            "domain": "nodefree.githubrowcontent.com",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://www.stairnode.com/freenode",
+            "domain": "stairnode.cczzuu.top",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://naidounode.com/freenode",
+            "domain": "naidounode.cczzuu.top",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://v2raynode.net/archives/category/freenode",
+            "domain": "v2raynode.cczzuu.top",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://www.freev2raynode.com/free-node-subscription/",
+            "domain": "node.freev2raynode.com",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://clashgithub.net/free-node/",
+            "domain": "node.clashgithub.net",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://clashfreenode.com/",
+            "domain": "clashfreenode.com",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://mianfeiv2rayx.github.io/",
+            "domain": "mianfeiv2rayx.github.io",
+            "ext": ".txt",
+        }
     ]
     for i in source:
         crawler(i["target_url"], i["domain"], i["ext"])

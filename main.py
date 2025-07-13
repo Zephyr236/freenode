@@ -407,6 +407,31 @@ if __name__ == "__main__":
             "target_url": "https://mianfeiv2rayx.github.io/",
             "domain": "mianfeiv2rayx.github.io",
             "ext": ".txt",
+        },
+        {
+            "target_url": "https://clash-meta.github.io/",
+            "domain": "node.freeclashnode.com",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://www.naidounode.com/",
+            "domain": "naidounode.cczzuu.top",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://nodev2ray.com/",
+            "domain": "node.nodev2ray.com",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://nodefree.net/",
+            "domain": "nodefree.githubrowcontent.com",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://v2rayshare.net/",
+            "domain": "v2rayshare.githubrowcontent.com",
+            "ext": ".txt",
         }
     ]
     for i in source:

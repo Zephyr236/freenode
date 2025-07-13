@@ -490,12 +490,19 @@ if __name__ == "__main__":
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/v2rayshare.txt",
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/wenode.txt",
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/yudou66.txt",
-        "https://github.com/free18/v2ray/raw/refs/heads/main/v.txt"
+        
+    ]
+
+    github_source_base64=[
+        "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt"
     ]
     
     for i in source:
         crawler(i["target_url"], i["domain"], i["ext"])
 
+    for i in github_source_base64:
+        decode_and_save_base64(i)
+    
     for i in github_source:
         fetch_and_save_content(i)
         

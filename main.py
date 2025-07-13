@@ -12,6 +12,52 @@ import base64
 import requests
 import binascii
 
+def fetch_and_save_content(url, output_file="raw.txt"):
+    global proxies
+    """
+    请求指定的URL，并将响应内容原样保存到txt文件
+    
+    参数:
+        url (str): 要请求的URL
+        output_file (str): 输出文件名(默认为'raw.txt')
+    
+    返回:
+        bool: 操作是否成功
+    """
+    try:
+        headers = {
+            "User-Agent": "curl/8.12.1",
+            "Accept": "*/*",
+            'Accept-Encoding': 'identity',
+        }
+        # 发送HTTP请求
+        response = requests.get(url, proxies=proxies, headers=headers, timeout=10)
+        response.raise_for_status()  # 检查请求是否成功
+        print(f"请求链接: {url}")
+        
+        # 获取响应内容
+        content = response.content
+        
+        # 尝试将内容转换为UTF-8字符串
+        try:
+            text_content = content.decode("utf-8")
+        except UnicodeDecodeError:
+            # 如果UTF-8解码失败，使用错误占位符替换
+            text_content = content.decode("utf-8", errors="replace")
+            
+        # 写入内容到文件
+        with open(output_file, "a", encoding="utf-8") as f:
+            f.write(text_content)
+            
+        print(f"保存成功! 内容已保存到: {output_file}")
+        return True
+        
+    except requests.exceptions.RequestException as e:
+        print(f"请求失败: {e}")
+    except Exception as e:
+        print(f"处理过程中出错: {e}")
+        
+    return False
 
 
 def decode_and_save_base64(url, output_file="raw.txt"):
@@ -429,7 +475,23 @@ if __name__ == "__main__":
             "ext": ".txt",
         }
     ]
+
+    github_source=[
+        "https://raw.githubusercontent.com/Barabama/FreeNodes/refs/heads/main/nodes/blues.txt",
+        "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/clashmeta.txt",
+        "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/ndnode.txt",
+        "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/nodefree.txt",
+        "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/nodev2ray.txt",
+        "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/v2rayshare.txt",
+        "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/wenode.txt",
+        "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/yudou66.txt"
+    ]
+    
     for i in source:
         crawler(i["target_url"], i["domain"], i["ext"])
+
+    for i in github_source:
+        fetch_and_save_content(i)
+        
     remove_blank_lines()
     convert_to_base64_and_save()

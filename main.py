@@ -489,7 +489,8 @@ if __name__ == "__main__":
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/nodev2ray.txt",
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/v2rayshare.txt",
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/wenode.txt",
-        "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/yudou66.txt"
+        "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/yudou66.txt",
+        "https://github.com/free18/v2ray/raw/refs/heads/main/v.txt"
     ]
     
     for i in source:

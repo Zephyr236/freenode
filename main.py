@@ -473,6 +473,11 @@ if __name__ == "__main__":
             "target_url": "https://v2rayshare.net/",            #失败
             "domain": "v2rayshare.githubrowcontent.com",
             "ext": ".txt",
+        },
+        {
+            "target_url": "https://hiddifynextnode.github.io/",
+            "domain": "hiddifynextnode.github.io",
+            "ext": ".txt",
         }
     ]
 

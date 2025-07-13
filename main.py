@@ -494,7 +494,8 @@ if __name__ == "__main__":
     ]
 
     github_source_base64=[
-        "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt"
+        "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt",
+        "https://raw.githubusercontent.com/snakem982/proxypool/main/source/v2ray-2.txt"
     ]
     
     for i in source:

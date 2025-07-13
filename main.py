@@ -345,17 +345,18 @@ def convert_to_base64_and_save(input_file_path="raw.txt", output_file_path="v2.t
         return f"未知错误: {str(e)}"
 
 def remove_blank_lines():
-    # 读取原始文件并移除非空行
     """
-    移除文件中的空行
-    读取raw.txt文件，过滤掉所有空行后重新写入原文件
+    移除文件中的空行和注释行
+    读取raw.txt文件，过滤掉所有空行和以#开头的注释行后重新写入原文件
     """
     with open('raw.txt', 'r', encoding='utf-8') as file:
-        non_blank_lines = [line for line in file if line.strip() != ""]
-
+        # 过滤条件：1. 不是空行 2. 不是以#开头的注释行
+        filtered_lines = [line for line in file if line.strip() != "" and not line.strip().startswith('#')]
     # 覆盖写入原文件
     with open('raw.txt', 'w', encoding='utf-8') as file:
-        file.writelines(non_blank_lines)
+        file.writelines(filtered_lines)
+    
+    print("已移除所有空行和注释行")
 
 # 使用示例
 if __name__ == "__main__":
@@ -490,12 +491,19 @@ if __name__ == "__main__":
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/v2rayshare.txt",
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/wenode.txt",
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/yudou66.txt",
+        "https://github.com/hzcsure/hzcsure/raw/refs/heads/main/example.txt"
         
     ]
 
     github_source_base64=[
         "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt",
-        "https://raw.githubusercontent.com/snakem982/proxypool/main/source/v2ray-2.txt"
+        "https://raw.githubusercontent.com/snakem982/proxypool/main/source/v2ray-2.txt",
+        "https://github.com/thefatedefeater/V2ray-Config/raw/refs/heads/main/Splitted-By-Protocol/vmess.txt",
+        "https://github.com/thefatedefeater/V2ray-Config/raw/refs/heads/main/Splitted-By-Protocol/hysteria2.txt",
+        "https://github.com/thefatedefeater/V2ray-Config/raw/refs/heads/main/Splitted-By-Protocol/ss.txt",
+        "https://github.com/thefatedefeater/V2ray-Config/raw/refs/heads/main/Splitted-By-Protocol/trojan.txt",
+        "https://github.com/thefatedefeater/V2ray-Config/raw/refs/heads/main/Splitted-By-Protocol/tuic.txt",
+        "https://github.com/thefatedefeater/V2ray-Config/raw/refs/heads/main/Splitted-By-Protocol/vless.txt"
     ]
     
     for i in source:

@@ -404,32 +404,27 @@ if __name__ == "__main__":
             "ext": ".txt",
         },
         {
-            "target_url": "https://mianfeiv2rayx.github.io/",
+            "target_url": "https://mianfeiv2rayx.github.io/",    #失败
             "domain": "mianfeiv2rayx.github.io",
             "ext": ".txt",
         },
         {
-            "target_url": "https://clash-meta.github.io/",
+            "target_url": "https://clash-meta.github.io/",        #失败
             "domain": "node.freeclashnode.com",
             "ext": ".txt",
         },
         {
-            "target_url": "https://www.naidounode.com/",
-            "domain": "naidounode.cczzuu.top",
-            "ext": ".txt",
-        },
-        {
-            "target_url": "https://nodev2ray.com/",
+            "target_url": "https://nodev2ray.com/",                #失败
             "domain": "node.nodev2ray.com",
             "ext": ".txt",
         },
         {
-            "target_url": "https://nodefree.net/",
+            "target_url": "https://nodefree.net/",                #失败
             "domain": "nodefree.githubrowcontent.com",
             "ext": ".txt",
         },
         {
-            "target_url": "https://v2rayshare.net/",
+            "target_url": "https://v2rayshare.net/",            #失败
             "domain": "v2rayshare.githubrowcontent.com",
             "ext": ".txt",
         }

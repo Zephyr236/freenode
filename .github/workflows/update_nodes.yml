@@ -24,7 +24,7 @@ jobs:
         python-version: '3.x'
 
     - name: Install dependencies
-      run: pip install requests
+      run: pip install requests beautifulsoup4
 
     - name: Run node crawler
       run: python main.py

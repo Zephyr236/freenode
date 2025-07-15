@@ -693,7 +693,7 @@ if __name__ == "__main__":
         fetch_and_save_content(i)
 
     for channel in channels:
-        process_telegram_channel(channel, max_workers=max_workers, output_file=output_file)
+        process_telegram_channel(channel)
         
     remove_blank_lines()
     convert_to_base64_and_save()

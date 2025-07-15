@@ -8,9 +8,183 @@ import re
 import requests
 from datetime import datetime
 from urllib.parse import urljoin, urlparse
+from bs4 import BeautifulSoup
+import concurrent.futures
+import threading
 import base64
 import requests
 import binascii
+
+file_lock = threading.Lock()
+
+def extract_urls_by_regex(html_content):
+    """
+    使用正则表达式从HTML内容中提取所有可能的URL
+    
+    参数:
+        html_content: 网页HTML内容
+        
+    返回:
+        list: 提取的URL列表
+    """
+    # URL正则表达式模式 - 匹配大多数URL格式
+    url_pattern = r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+(?:/[-\w%/.]+)*(?:\?[^"\s<>]*)?'
+    
+    # 使用正则表达式查找所有匹配
+    urls = re.findall(url_pattern, html_content)
+    
+    # 过滤掉包含t.me和telegram的链接
+    filtered_urls = []
+    for url in urls:
+        if "https://t.me/" not in url and "http://t.me/" not in url and "telegram" not in url:
+            filtered_urls.append(url)
+    
+    return filtered_urls
+
+def process_telegram_channel(channel_url, output_file="raw.txt", max_workers=10):
+    """
+    处理Telegram公开频道，使用BeautifulSoup和正则表达式两种方式提取链接，
+    并尝试Base64解码保存订阅内容
+    
+    参数:
+        channel_url: Telegram公开频道URL (例如: https://t.me/s/channelname)
+        proxy_host: SOCKS5代理主机地址，默认为127.0.0.1
+        proxy_port: SOCKS5代理端口，默认为10909
+        output_file: 保存解码内容的文件名，默认为raw.txt
+        max_workers: 线程池的最大线程数，默认为10
+        
+    返回:
+        tuple: (成功解码的链接数, 提取的总链接数)
+    """
+    
+    # 确保频道URL使用公开访问格式
+    if "/s/" not in channel_url:
+        channel_url = channel_url.replace("https://t.me/", "https://t.me/s/")
+    
+    print(f"\n正在处理Telegram频道: {channel_url}")
+    
+    try:
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        
+        response = requests.get(channel_url, headers=headers, timeout=15)
+        response.raise_for_status()
+        html_content = response.text
+        
+        # 方法1: 使用BeautifulSoup从<a>标签提取URLs
+        soup = BeautifulSoup(html_content, 'html.parser')
+        bs_links = []
+        
+        for link in soup.find_all('a', href=True):
+            href = link.get('href').strip()
+            # 过滤无效链接
+            if not href or href.startswith(('javascript:', 'mailto:', 'tel:')):
+                continue
+            # 转换为绝对URL
+            absolute_url = urljoin(channel_url, href)
+            
+            # 过滤掉包含t.me和telegram的链接
+            if "https://t.me/" not in absolute_url and "http://t.me/" not in absolute_url and "telegram" not in absolute_url:
+                bs_links.append(absolute_url)
+        
+        # 方法2: 使用正则表达式提取URLs
+        regex_links = extract_urls_by_regex(html_content)
+        
+        # 合并两种方式提取的链接并去重
+        all_links = []
+        for i in list(set(bs_links + regex_links)):
+            if "https://t.me/" not in i and "http://t.me/" not in i and "telegram" not in i:
+                all_links.append(i)
+        
+        # 分别打印两种方式的结果
+        print(f"BeautifulSoup方式提取: {len(bs_links)} 个链接")
+        print(f"正则表达式方式提取: {len(regex_links)} 个链接")
+        print(f"合并去重后总计: {len(all_links)} 个可能的订阅链接")
+        
+        # 使用线程池并发处理链接
+        success_count = 0
+        with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # 创建任务列表，每个任务处理一个链接
+            future_to_url = {executor.submit(tg_decode_and_save_base64, url, output_file): url for url in all_links}
+            
+            # 收集处理结果
+            for future in concurrent.futures.as_completed(future_to_url):
+                url = future_to_url[future]
+                try:
+                    success = future.result()
+                    if success:
+                        success_count += 1
+                except Exception as exc:
+                    print(f'{url} 处理时出现异常: {exc}')
+        
+        print(f"频道处理完成: {len(all_links)} 个链接, {success_count} 个成功解码并保存")
+        return success_count, len(all_links)
+        
+    except requests.exceptions.RequestException as e:
+        print(f"请求频道出错: {e}")
+        return 0, 0
+    except Exception as e:
+        print(f"处理频道过程中出错: {e}")
+        return 0, 0
+
+def tg_decode_and_save_base64(url, output_file):
+    """
+    请求指定的URL，尝试Base64解码内容，检查是否包含"://"，
+    并将符合条件的解码结果保存到txt文件
+    使用锁确保文件写入同步
+    """
+    try:
+        headers = {
+            "User-Agent": "curl/8.12.1",
+            "Accept": "*/*",
+            'Accept-Encoding': 'identity',
+        }
+        # 发送HTTP请求
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        
+        print(f"尝试订阅链接: {url}")
+        content = response.content
+        
+        # 尝试Base64解码
+        try:
+            decoded_content = base64.b64decode(content)
+        except binascii.Error:
+            # 如果标准解码失败，尝试URL安全变体
+            try:
+                decoded_content = base64.urlsafe_b64decode(content)
+            except binascii.Error:
+                print(f"Base64解码失败: {url}")
+                return False
+        
+        # 尝试将解码内容转换为UTF-8字符串
+        try:
+            decoded_text = decoded_content.decode("utf-8")
+        except UnicodeDecodeError:
+            # 如果UTF-8解码失败，使用错误占位符替换
+            decoded_text = decoded_content.decode("utf-8", errors="replace")
+        
+        # 检查解码结果是否包含"://"
+        if "://" not in decoded_text:
+            print(f"解码内容不包含有效协议标识(://)，跳过: {url}")
+            return False
+        
+        # 使用锁进行线程同步，确保文件写入安全
+        with file_lock:
+            # 写入解码内容到文件
+            with open(output_file, "a", encoding="utf-8") as f:
+                f.write(decoded_text + "\n")  # 添加换行符分隔不同订阅内容
+        
+        print(f"✓ 解码成功! 已保存到: {output_file}")
+        return True
+        
+    except requests.exceptions.RequestException as e:
+        print(f"请求失败: {e}")
+    except Exception as e:
+        print(f"处理过程中出错: {e}")
+    
+    return False
 
 def fetch_and_save_content(url, output_file="raw.txt"):
     global proxies
@@ -499,6 +673,15 @@ if __name__ == "__main__":
         "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt",
         "https://raw.githubusercontent.com/snakem982/proxypool/main/source/v2ray-2.txt"
     ]
+
+    channels = [
+        "https://t.me/s/wxdy666",
+        "https://t.me/s/fq521",
+        "https://t.me/s/jiedian_share",
+        "https://t.me/s/ednovasfree",
+        "https://t.me/s/fqzw9",
+        "https://t.me/s/SSRSUB",
+    ]
     
     for i in source:
         crawler(i["target_url"], i["domain"], i["ext"])
@@ -508,6 +691,9 @@ if __name__ == "__main__":
     
     for i in github_source:
         fetch_and_save_content(i)
+
+    for channel in channels:
+        process_telegram_channel(channel, max_workers=max_workers, output_file=output_file)
         
     remove_blank_lines()
     convert_to_base64_and_save()

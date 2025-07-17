@@ -654,11 +654,6 @@ if __name__ == "__main__":
             "target_url": "https://hiddifynextnode.github.io/",
             "domain": "hiddifynextnode.github.io",
             "ext": ".txt",
-        },
-        {
-            "target_url": "https://www.cfmem.com/",
-            "domain": "fs.v2rayse.com",
-            "ext": ".txt",
         }
     ]
 

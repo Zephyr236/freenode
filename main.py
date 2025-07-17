@@ -378,6 +378,7 @@ def get_nearest_urls_for_today(url):
         f"{today.month}月{today.day}号",  # 6月3号
         f"{today.year}-{today.month:02d}-{today.day:02d}",  # 2024-06-03
         f"{today.year}年{today.month:02d}月{today.day:02d}日",  # 2024年06月03日
+        f"{today.year}年{today.month:02d}月{today.day:02d}",  # 2024年06月03
         f"{today.year}.{today.month:02d}.{today.day:02d}",  # 2024.06.03
         f"{today.month:02d}月{today.day:02d}日",  # 06月03日
         f"{today.month:02d}月{today.day}日",  # 06月3日
@@ -652,6 +653,11 @@ if __name__ == "__main__":
         {
             "target_url": "https://hiddifynextnode.github.io/",
             "domain": "hiddifynextnode.github.io",
+            "ext": ".txt",
+        },
+        {
+            "target_url": "https://www.cfmem.com/",
+            "domain": "fs.v2rayse.com",
             "ext": ".txt",
         }
     ]

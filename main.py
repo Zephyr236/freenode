@@ -654,6 +654,11 @@ if __name__ == "__main__":
             "target_url": "https://hiddifynextnode.github.io/",
             "domain": "hiddifynextnode.github.io",
             "ext": ".txt",
+        },
+        {
+            "target_url": "https://www.crazygeeky.com/category/151/",
+            "domain": "crazygeeky.com",
+            "ext": ".txt",
         }
     ]
 

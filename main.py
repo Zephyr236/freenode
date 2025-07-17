@@ -664,6 +664,11 @@ if __name__ == "__main__":
             "target_url": "https://wanzhuanmi.com/freenode",
             "domain": "wanzhuanmi.cczzuu.top",
             "ext": ".txt",
+        },
+        {
+            "target_url": "https://www.stairnode.com/freenode",
+            "domain": "stairnode.cczzuu.top",
+            "ext": ".txt",
         }
     ]
 

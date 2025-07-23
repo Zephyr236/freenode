@@ -698,7 +698,12 @@ if __name__ == "__main__":
         "https://t.me/s/fqzw9",
         "https://t.me/s/SSRSUB",
         "https://t.me/s/freevpnatm",
-        "https://t.me/s/sdffnkl"
+        "https://t.me/s/sdffnkl",
+        "https://t.me/s/ccbaohe",
+        "https://t.me/s/juzibaipiao",
+        "https://t.me/s/dns68",
+        "https://t.me/s/hkaa0",
+        "https://t.me/s/SubscriptionShare"
         
     ]
     

@@ -17,6 +17,67 @@ import binascii
 
 file_lock = threading.Lock()
 
+def extract_and_save_proxy_links(url, filename="raw.txt"):
+    """
+    从指定URL提取代理链接并直接追加保存到文件
+    
+    参数:
+        url (str): 要请求的网页URL
+        filename (str): 保存的文件名，默认为raw.txt
+        
+    返回:
+        int: 提取并保存的链接数量
+    """
+    # 支持的协议类型
+    protocols = ['vmess://', 'ss://', 'ssr://', 'trojan://', 'hy2://', 'vless://']
+    
+    try:
+        # 发送HTTP请求，使用SOCKS5代理
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        
+        
+        # 获取网页内容
+        response = requests.get(url, headers=headers, timeout=30)
+        response.raise_for_status()
+        html_content = response.text
+        
+        # 提取所有协议链接
+        all_links = set()
+        
+        # 使用两种方法提取链接
+        # 1. 按行提取
+        for line in html_content.split('\n'):
+            line = line.strip()
+            for protocol in protocols:
+                if line.startswith(protocol):
+                    all_links.add(line)
+        
+        # 2. 使用正则表达式提取
+        for protocol in protocols:
+            pattern = f'(?<![a-zA-Z]){re.escape(protocol)}[^\s<>"\']*'
+            matches = re.findall(pattern, html_content)
+            for match in matches:
+                if match.startswith(protocol):
+                    all_links.add(match)
+        
+        # 将链接追加到文件
+        if all_links:
+            with open(filename, 'a', encoding='utf-8') as f:
+                for link in all_links:
+                    f.write(f"{link}\n")
+            
+            print(f"从 {url} 提取并保存了 {len(all_links)} 个代理链接")
+        else:
+            print(f"从 {url} 未找到代理链接")
+        
+        return len(all_links)
+        
+    except Exception as e:
+        print(f"提取链接时出错: {e}")
+        return 0
+
 def extract_urls_by_regex(html_content):
     """
     使用正则表达式从HTML内容中提取所有可能的URL
@@ -718,6 +779,20 @@ if __name__ == "__main__":
 
     for channel in channels:
         process_telegram_channel(channel)
-        
+
+    channels_direct=[
+        "https://t.me/s/zerobaipiao",
+        "https://t.me/s/wxdy666",
+        "https://t.me/s/ShareCentrePro",
+        "https://t.me/s/JiedianSsr",
+        "https://t.me/s/jiedianF",
+        "https://t.me/s/mftizi",
+        "https://t.me/s/freevpnatm",
+        "https://t.me/s/vpn_3000",
+        "https://t.me/s/ZDYZ2",
+    ]
+    for url in channels_direct:
+        extract_and_save_proxy_links(url)
+    
     remove_blank_lines()
     convert_to_base64_and_save()

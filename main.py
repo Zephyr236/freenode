@@ -800,13 +800,29 @@ if __name__ == "__main__":
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/v2rayshare.txt",
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/wenode.txt",
         "https://github.com/Barabama/FreeNodes/raw/refs/heads/main/nodes/yudou66.txt",
-        "https://github.com/hzcsure/hzcsure/raw/refs/heads/main/example.txt"
+        "https://github.com/hzcsure/hzcsure/raw/refs/heads/main/example.txt",
+        "https://raw.githubusercontent.com/HakurouKen/free-node/main/public",
+        "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt"
         
     ]
 
     github_source_base64=[
         "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt",
-        "https://raw.githubusercontent.com/snakem982/proxypool/main/source/v2ray-2.txt"
+        "https://raw.githubusercontent.com/snakem982/proxypool/main/source/v2ray-2.txt",
+        "https://raw.githubusercontent.com/Pawdroid/Free-servers/main/sub",
+        "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2",
+        "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub",
+        "https://raw.githubusercontent.com/a2470982985/getNode/main/v2ray.txt",
+        "https://github.001315.xyz/https://gist.githubusercontent.com/shaoyouvip/9dc3d23482fdc4a19e407a7e944782b8/raw/base64.txt",
+        "https://dlconf.clashapps.cc/conf/c641d872-b44b-2b3e-b21e-6cd4997dd084.conf",
+        "https://raw.githubusercontent.com/mfuu/v2ray/master/v2ray",
+        "https://raw.githubusercontent.com/mahdibland/V2RayAggregator/refs/heads/master/Eternity.txt",
+        "https://raw.githubusercontent.com/peasoft/NoMoreWalls/refs/heads/master/list.txt",
+        "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt",
+        "https://raw.githubusercontent.com/hello-world-1989/cn-news/main/end-gfw-together",
+        "https://raw.githubusercontent.com/ggborr/FREEE-VPN/refs/heads/main/6V2ray",
+        "https://raw.githubusercontent.com/hello-world-1989/v2-sub/refs/heads/main/end-gfw-together",
+        "https://iwxf.netlify.app/"
     ]
 
     channels = [

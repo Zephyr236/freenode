@@ -14,8 +14,64 @@ import threading
 import base64
 import requests
 import binascii
+import os
+import subprocess
+import csv
+import time
 
 file_lock = threading.Lock()
+
+def test_nodes_and_extract_valid_ones():
+    """
+    下载xray-knife工具，执行节点测速，并提取有效节点保存到valid.txt
+    """
+
+    
+    print("开始下载xray-knife工具...")
+    try:
+        # 下载xray-knife工具
+        subprocess.run(
+            ["wget", "https://github.com/lilendian0x00/xray-knife/releases/download/v6.2.6/Xray-knife-linux-64.zip"],
+            check=True
+        )
+        
+        # 解压工具
+        subprocess.run(["unzip", "-o", "Xray-knife-linux-64.zip"], check=True)
+        
+        # 赋予执行权限
+        subprocess.run(["chmod", "+x", "./xray-knife"], check=True)
+        
+        print("开始测速节点，请稍等...")
+        # 执行测速
+        subprocess.run(
+            ["./xray-knife", "http", "-f", "raw.txt", "--speedtest", "--sort", "--type", "csv", "-o", "results.csv", "-t", "500"],
+            check=True
+        )
+        
+        # 读取CSV文件并提取有效节点
+        valid_nodes = []
+        with open("results.csv", "r", encoding="utf-8") as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                # 检查download值是否大于0
+                try:
+                    download_value = float(row.get('download', '0'))
+                    if download_value > 0:
+                        valid_nodes.append(row['link'])
+                except (ValueError, TypeError):
+                    continue
+        
+        # 保存有效节点到valid.txt
+        with open("valid.txt", "w", encoding="utf-8") as f:
+            for node in valid_nodes:
+                f.write(f"{node}\n")
+        
+        print(f"已从测速结果中提取 {len(valid_nodes)} 个有效节点保存到 valid.txt")
+        
+    except subprocess.CalledProcessError as e:
+        print(f"执行命令失败: {e}")
+    except Exception as e:
+        print(f"处理过程中出错: {e}")
 
 def extract_and_save_proxy_links(url, filename="raw.txt"):
     """
@@ -545,7 +601,7 @@ def crawler(target_url, domain, ext):
         for i in extract_domain_urls_if_contains_date(link, domain, ext):
             decode_and_save_base64(i)
 
-def convert_to_base64_and_save(input_file_path="raw.txt", output_file_path="v2.txt"):
+def convert_to_base64_and_save(input_file_path="valid.txt", output_file_path="v2.txt"):
     """
     读取文件、转换为Base64编码并保存结果
     
@@ -597,7 +653,7 @@ def remove_blank_lines():
 # 使用示例
 if __name__ == "__main__":
     global proxies
-    for file in ["raw.txt", "v2.txt"]:
+    for file in ["raw.txt", "v2.txt","valid.txt","results.csv"]:
         if os.path.exists(file):
             os.remove(file)
 #     proxies = {
@@ -795,4 +851,5 @@ if __name__ == "__main__":
         extract_and_save_proxy_links(url)
     
     remove_blank_lines()
+    test_nodes_and_extract_valid_ones()
     convert_to_base64_and_save()

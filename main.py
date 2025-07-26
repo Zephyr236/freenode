@@ -45,7 +45,9 @@ def test_nodes_and_extract_valid_ones():
         # 执行测速
         subprocess.run(
             ["./xray-knife", "http", "-f", "raw.txt", "--speedtest", "--sort", "--type", "csv", "-o", "results.csv", "-t", "500"],
-            check=True
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
         )
         
         # 读取CSV文件并提取有效节点

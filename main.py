@@ -85,7 +85,7 @@ def test_nodes_and_extract_valid_ones():
         print("开始测速节点，请稍等...")
         # 执行测速
         subprocess.run(
-            ["./xray-knife", "http", "-f", "raw.txt", "--speedtest", "--sort", "--type", "csv", "-o", "results.csv", "-t", "500"],
+            ["./xray-knife", "http", "-f", "raw.txt", "--speedtest", "--sort", "--type", "csv", "-o", "results.csv", "-t", "50"],
             check=True,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL

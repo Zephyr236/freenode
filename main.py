@@ -77,10 +77,10 @@ def test_nodes_and_extract_valid_ones():
         )
         
         # 解压工具
-        subprocess.run(["unzip", "-o", "Xray-knife-linux-64.zip"], check=True)
+        subprocess.run(["unzip", "-o", "Xray-knife-linux-64.zip"], check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         
         # 赋予执行权限
-        subprocess.run(["chmod", "+x", "./xray-knife"], check=True)
+        subprocess.run(["chmod", "+x", "./xray-knife"], check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         
         print("开始测速节点，请稍等...")
         # 执行测速

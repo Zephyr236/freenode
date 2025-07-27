@@ -2,7 +2,7 @@ name: Update Nodes
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # 每10分钟运行一次
+    - cron: '*/30 * * * *'  # 每30分钟运行一次
   workflow_dispatch:  # 允许手动触发
 
 jobs:

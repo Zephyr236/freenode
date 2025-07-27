@@ -71,7 +71,9 @@ def test_nodes_and_extract_valid_ones():
         # 下载xray-knife工具
         subprocess.run(
             ["wget", "https://github.com/lilendian0x00/xray-knife/releases/download/v6.2.6/Xray-knife-linux-64.zip"],
-            check=True
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
         )
         
         # 解压工具

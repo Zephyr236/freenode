@@ -908,6 +908,6 @@ if __name__ == "__main__":
         extract_and_save_proxy_links(url)
     
     remove_blank_lines()
-    remove_duplicates_from_file("raw.rxr")
+    remove_duplicates_from_file("raw.txt")
     test_nodes_and_extract_valid_ones()
     convert_to_base64_and_save()

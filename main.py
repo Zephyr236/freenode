@@ -4,7 +4,6 @@ from datetime import datetime
 from urllib.parse import urljoin, urlsplit
 import bisect
 import os
-import re
 import requests
 from datetime import datetime
 from urllib.parse import urljoin, urlparse
@@ -14,12 +13,52 @@ import threading
 import base64
 import requests
 import binascii
-import os
 import subprocess
 import csv
 import time
+import tempfile
+import shutil
 
 file_lock = threading.Lock()
+
+def remove_duplicates_from_file(filename, encoding='utf-8'):
+    """
+    从文件中删除重复的行，并覆盖原文件
+    
+    参数:
+        filename (str): 需要去重的文件路径
+        encoding (str, optional): 文件编码，默认为'utf-8'
+    
+    返回:
+        int: 去重后的行数，出错则返回-1
+    """
+    temp_filename = None
+    try:
+        # 创建临时文件
+        with tempfile.NamedTemporaryFile(mode='w+', encoding=encoding, delete=False) as temp_file:
+            temp_filename = temp_file.name
+            
+            # 读取原文件并写入去重后的内容到临时文件
+            seen = set()
+            count = 0
+            
+            with open(filename, 'r', encoding=encoding) as file:
+                for line in file:
+                    if line not in seen:
+                        seen.add(line)
+                        temp_file.write(line)
+                        count += 1
+        
+        # 用临时文件替换原文件
+        shutil.move(temp_filename, filename)
+        print(f"成功去重，保留了 {count} 行唯一内容。")
+        return count
+    except Exception as e:
+        print(f"处理文件时出错: {e}")
+        # 如果临时文件存在，删除它
+        if temp_filename and os.path.exists(temp_filename):
+            os.remove(temp_filename)
+        return -1
 
 def test_nodes_and_extract_valid_ones():
     """
@@ -869,5 +908,6 @@ if __name__ == "__main__":
         extract_and_save_proxy_links(url)
     
     remove_blank_lines()
+    remove_duplicates_from_file("raw.rxr")
     test_nodes_and_extract_valid_ones()
     convert_to_base64_and_save()

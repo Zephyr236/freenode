@@ -827,6 +827,11 @@ if __name__ == "__main__":
             "target_url": "https://www.stairnode.com/freenode",
             "domain": "stairnode.cczzuu.top",
             "ext": ".txt",
+        },
+        {
+            "target_url": "https://free.datiya.com/",
+            "domain": "free.datiya.com",
+            "ext": ".txt",
         }
     ]
 
@@ -849,7 +854,8 @@ if __name__ == "__main__":
         "https://raw.githubusercontent.com/ssrsub/ssr/refs/heads/master/ssr.txt",
         "https://raw.githubusercontent.com/ssrsub/ssr/refs/heads/master/trojan.txt",
         "https://raw.githubusercontent.com/ssrsub/ssr/refs/heads/master/vless.txt",
-        "https://raw.githubusercontent.com/ssrsub/ssr/refs/heads/master/vmess.txt"
+        "https://raw.githubusercontent.com/ssrsub/ssr/refs/heads/master/vmess.txt",
+        "https://raw.githubusercontent.com/zhangkaiitugithub/passcro/main/speednodes.txt"
         
     ]
 
@@ -871,7 +877,10 @@ if __name__ == "__main__":
         "https://raw.githubusercontent.com/hello-world-1989/v2-sub/refs/heads/main/end-gfw-together",
         "https://iwxf.netlify.app/",
         "https://raw.githubusercontent.com/ssrsub/ssr/refs/heads/master/v2ray",
-        "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11"
+        "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11",
+        "github.com/Misaka-blog/chromego_merge/raw/refs/heads/main/sub/base64.txt",
+        "https://links.bocchi2b.top/clash",
+        "https://sub.xeton.dev/sub?target=v2ray&url=https%3A%2F%2Fraw.githubusercontent.com%2Fanaer%2FSub%2Fmain%2Fclash.yaml"
     ]
 
     channels = [
@@ -915,6 +924,7 @@ if __name__ == "__main__":
         "https://t.me/s/vpn_3000",
         "https://t.me/s/ZDYZ2",
         "https://t.me/s/v2rayfree",
+        "https://t.me/s/v2ray_t",
         "https://github.com/Alvin9999/new-pac/wiki/v2ray%E5%85%8D%E8%B4%B9%E8%B4%A6%E5%8F%B7",
         "https://github.com/Alvin9999/new-pac/wiki/ss%E5%85%8D%E8%B4%B9%E8%B4%A6%E5%8F%B7"
     ]

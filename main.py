@@ -870,7 +870,8 @@ if __name__ == "__main__":
         "https://raw.githubusercontent.com/ggborr/FREEE-VPN/refs/heads/main/6V2ray",
         "https://raw.githubusercontent.com/hello-world-1989/v2-sub/refs/heads/main/end-gfw-together",
         "https://iwxf.netlify.app/",
-        "https://raw.githubusercontent.com/ssrsub/ssr/refs/heads/master/v2ray"
+        "https://raw.githubusercontent.com/ssrsub/ssr/refs/heads/master/v2ray",
+        "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11"
     ]
 
     channels = [
@@ -886,7 +887,8 @@ if __name__ == "__main__":
         "https://t.me/s/juzibaipiao",
         "https://t.me/s/dns68",
         "https://t.me/s/hkaa0",
-        "https://t.me/s/SubscriptionShare"
+        "https://t.me/s/SubscriptionShare",
+        
         
     ]
     
@@ -912,6 +914,7 @@ if __name__ == "__main__":
         "https://t.me/s/freevpnatm",
         "https://t.me/s/vpn_3000",
         "https://t.me/s/ZDYZ2",
+        "https://t.me/s/v2rayfree",
         "https://github.com/Alvin9999/new-pac/wiki/v2ray%E5%85%8D%E8%B4%B9%E8%B4%A6%E5%8F%B7",
         "https://github.com/Alvin9999/new-pac/wiki/ss%E5%85%8D%E8%B4%B9%E8%B4%A6%E5%8F%B7"
     ]

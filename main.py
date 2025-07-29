@@ -93,6 +93,8 @@ def test_nodes_and_extract_valid_ones():
         
         # 读取CSV文件并提取有效节点
         valid_nodes = []
+        nodes_data = []
+        
         with open("results.csv", "r", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
@@ -100,21 +102,31 @@ def test_nodes_and_extract_valid_ones():
                 try:
                     download_value = float(row.get('download', '0'))
                     if download_value > 0:
-                        valid_nodes.append(row['link'])
+                        nodes_data.append({
+                            'link': row['link'],
+                            'download': download_value
+                        })
                 except (ValueError, TypeError):
                     continue
         
-        # 保存有效节点到valid.txt
+        # 按照download值从大到小排序
+        nodes_data.sort(key=lambda x: x['download'], reverse=True)
+        
+        # 提取排序后的链接
+        valid_nodes = [node['link'] for node in nodes_data]
+        
+        # 保存有效节点到valid.txt（已按download值从大到小排序）
         with open("valid.txt", "w", encoding="utf-8") as f:
             for node in valid_nodes:
                 f.write(f"{node}\n")
         
-        print(f"已从测速结果中提取 {len(valid_nodes)} 个有效节点保存到 valid.txt")
+        print(f"已从测速结果中提取 {len(valid_nodes)} 个有效节点保存到 valid.txt（已按下载速度从高到低排序）")
         
     except subprocess.CalledProcessError as e:
         print(f"执行命令失败: {e}")
     except Exception as e:
         print(f"处理过程中出错: {e}")
+
 
 def extract_and_save_proxy_links(url, filename="raw.txt"):
     """

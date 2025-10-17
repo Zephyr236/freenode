@@ -253,7 +253,7 @@ class SourceConfig:
         "https://raw.githubusercontent.com/Misaka-blog/chromego_merge/refs/heads/main/sub/base64.txt",
         "https://links.bocchi2b.top/clash",
         "https://sub.xeton.dev/sub?target=v2ray&url=https%3A%2F%2Fraw.githubusercontent.com%2Fanaer%2FSub%2Fmain%2Fclash.yaml",
-        "https://x-access-token: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@raw.githubusercontent.com/Zephyr236/freenode/refs/heads/main/v2.txt",
+        "https://x-access-token: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@raw.githubusercontent.com/Zephyr236/freenode/refs/heads/main/v2.txt",
         "https://raw.githubusercontent.com/Flikify/Free-Node/refs/heads/main/v2ray.txt"
     ]
 
@@ -1562,4 +1562,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

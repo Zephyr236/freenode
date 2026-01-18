@@ -145,7 +145,20 @@ DIRECT_SOURCE = [
     "https://t.me/s/v2rayfree",
     "https://t.me/s/v2ray_t",
     "https://t.me/s/dingyue_center",
-    "https://github.com/free-nodes/v2rayfree"
+    "https://github.com/free-nodes/v2rayfree",
+    "https://t.me/s/wxdy666",
+    "https://t.me/s/fq521",
+    "https://t.me/s/jiedian_share",
+    "https://t.me/s/fqzw9",
+    "https://t.me/s/SSRSUB",
+    "https://t.me/s/ccbaohe",
+    "https://t.me/s/juzibaipiao",
+    "https://t.me/s/dns68",
+    "https://t.me/s/hkaa0",
+    "https://t.me/s/SubscriptionShare",
+    "https://t.me/s/dingyue_center",
+    "https://t.me/s/freeVPNjd",
+    "https://t.me/s/mfbp1"
 ]
 
 date_format = [now.strftime("%Y年%m月%d日"), now.strftime(
@@ -227,11 +240,11 @@ def web_crawler(i):
     print(i['domain'], count)
 
 
-def tg_base64_decode(url,count):
+def tg_base64_decode(url, count):
     # print(url)
     try:
         response = requests.get(url=url, headers=headers)
-        if response.status_code!=200:
+        if response.status_code != 200:
             return None
         response.encoding = response.apparent_encoding
         text = response.text
@@ -244,7 +257,7 @@ def tg_base64_decode(url,count):
 
     if any(i in text for i in PROTOCOL):
         # print("raw",text[:20])
-        count[0]=count[0]+1
+        count[0] = count[0]+1
         URLS.append(url)
         return text
     else:
@@ -253,13 +266,13 @@ def tg_base64_decode(url,count):
             text += '=' * (4 - missing_padding)
         decoded_data = base64.b64decode(text)
         # print("decode",text[:20])
-        count[0]=count[0]+1
+        count[0] = count[0]+1
         URLS.append(url)
         return decoded_data.decode('utf-8')
 
 
 def all_url(matches):
-    count=[0]
+    count = [0]
     with ThreadPoolExecutor(max_workers=10) as executor:
         for i in matches:
             if "http" not in i:
@@ -268,16 +281,16 @@ def all_url(matches):
                 pattern = r'href=[\'"].*?[\'"]'
                 href = re.findall(pattern, i, re.DOTALL)
                 if "t.me" not in href[0][6:-1] and "telegram" not in href[0][6:-1]:
-                    executor.submit(tg_base64_decode, href[0][6:-1],count)
-                    #tg_base64_decode(href[0][6:-1],count)
+                    executor.submit(tg_base64_decode, href[0][6:-1], count)
+                    # tg_base64_decode(href[0][6:-1],count)
 
-                            # print(href[0][6:-1], text[:20])
+                    # print(href[0][6:-1], text[:20])
 
             else:
-                #tg_base64_decode(i[6:-7],count)
-                executor.submit(tg_base64_decode, i[6:-7],count)
+                # tg_base64_decode(i[6:-7],count)
+                executor.submit(tg_base64_decode, i[6:-7], count)
                 pass
-    
+
     return count[0]
 
 
@@ -293,38 +306,41 @@ def tg_crawler(i):
     response = requests.get(url=i, headers=headers)
     response.encoding = response.apparent_encoding
     matches = tg_url_extract(response.text)
-    count=all_url(matches)
-    print(i,count)
+    count = all_url(matches)
+    print(i, count)
+
 
 def find_subscribe(url):
-    count=0
+    count = 0
     response = requests.get(url=url, headers=headers)
     response.encoding = response.apparent_encoding
-    html=response.text
-    matches_all=[]
+    html = response.text
+    matches_all = []
     for i in PROTOCOL:
         pattern = f'{i}.*?[ \\n<]'
         matches = re.findall(pattern, html, re.DOTALL)
-        matches_all=matches_all+matches
+        matches_all = matches_all+matches
     for i in matches_all:
-        if len(i)>20:
+        if len(i) > 20:
             # print(i.strip().replace("<",""))
-            subscribe=ht.unescape(i.strip().replace("<",""))
+            subscribe = ht.unescape(i.strip().replace("<", ""))
             SUBSCRIBE.append(subscribe)
-            count=count+1
-    print(url,count)
+            count = count+1
+    print(url, count)
 
-def save(url,file):
+
+def save(url, file):
     response = requests.get(url=url, headers=headers)
     response.encoding = response.apparent_encoding
-    subscribe=base64_decode(response.text)
+    subscribe = base64_decode(response.text)
     with lock:
-        print(url,subscribe[:20])
+        print(url, subscribe[:20])
         file.write(subscribe+"\n")
+
 
 if __name__ == '__main__':
     # print(date_format)
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=30) as executor:
         for i in WEBSITE_CRAWLER_SOURCES:
             # web_crawler(i)
             executor.submit(web_crawler, i)
@@ -338,24 +354,26 @@ if __name__ == '__main__':
         for i in DIRECT_SOURCE:
             executor.submit(find_subscribe, i)
 
-    with open("subscribe","a",encoding="utf-8") as file:
-        with ThreadPoolExecutor(max_workers=30) as executor:
+    with open("subscribe", "a", encoding="utf-8") as file:
+        with ThreadPoolExecutor(max_workers=10) as executor:
             for i in URLS:
-                executor.submit(save, i,file)
+                executor.submit(save, i, file)
                 # response = requests.get(url=i, headers=headers)
                 # response.encoding = response.apparent_encoding
                 # subscribe=base64_decode(response.text)
                 # print(i,subscribe[:20])
                 # file.write(subscribe+"\n")
-    
+
         for i in SUBSCRIBE:
             file.write(i+"\n")
 
-    seen=set()
-    with open("subscribe","r",encoding="utf-8") as input,open("v2","a",encoding="utf-8") as output:
+    seen = set()
+    with open("subscribe", "r", encoding="utf-8") as input, open("v2", "a", encoding="utf-8") as output:
         for i in input:
-            line=i.strip()
-            if line and line not in seen:
-                seen.add(line)
-                output.write(line+"\n")
+            line = i.strip()
+            if any(line.startswith(p) for p in PROTOCOL):
+
+                if line and line not in seen:
+                    seen.add(line)
+                    output.write(line+"\n")
     print(f"去重后共{len(seen)}")

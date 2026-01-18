@@ -340,7 +340,7 @@ def save(url, file):
 
 if __name__ == '__main__':
     # print(date_format)
-    with ThreadPoolExecutor(max_workers=30) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         for i in WEBSITE_CRAWLER_SOURCES:
             # web_crawler(i)
             executor.submit(web_crawler, i)

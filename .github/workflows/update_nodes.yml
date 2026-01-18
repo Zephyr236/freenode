@@ -36,7 +36,7 @@ jobs:
         wget https://github.com/lilendian0x00/xray-knife/releases/download/v6.2.6/Xray-knife-linux-64.zip
         unzip -o Xray-knife-linux-64.zip
         chmod 777 xray-knife
-        ./xray-knife http -f v2 --speedtest --sort -o result.txt -t 500
+        ./xray-knife http -f v2 --speedtest --sort -o result.txt -t 500 > /dev/null
         cat result.txt
 
     - name: Commit changes

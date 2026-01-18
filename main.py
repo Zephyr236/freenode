@@ -328,8 +328,7 @@ def save(url, file):
 
 if __name__ == '__main__':
     # print(date_format)
-    os.remove("subscribe")
-    os.remove("v2")
+
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         for i in WEBSITE_CRAWLER_SOURCES:
             executor.submit(web_crawler, i)

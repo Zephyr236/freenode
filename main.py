@@ -5,6 +5,8 @@ import base64
 import threading
 import html as ht
 from concurrent.futures import ThreadPoolExecutor
+import os
+MAX_WORKERS = min(32, os.cpu_count() * 4 + 1)
 
 now = datetime.datetime.now()
 lock = threading.Lock()
@@ -146,7 +148,6 @@ DIRECT_SOURCE = [
     "https://t.me/s/v2ray_t",
     "https://t.me/s/dingyue_center",
     "https://github.com/free-nodes/v2rayfree",
-    "https://t.me/s/wxdy666",
     "https://t.me/s/fq521",
     "https://t.me/s/jiedian_share",
     "https://t.me/s/fqzw9",
@@ -156,7 +157,6 @@ DIRECT_SOURCE = [
     "https://t.me/s/dns68",
     "https://t.me/s/hkaa0",
     "https://t.me/s/SubscriptionShare",
-    "https://t.me/s/dingyue_center",
     "https://t.me/s/freeVPNjd",
     "https://t.me/s/mfbp1"
 ]
@@ -165,7 +165,17 @@ date_format = [now.strftime("%Y年%m月%d日"), now.strftime(
     "%m.%d"), now.strftime("%m月%d日"), f"{now.month}月{now.day}日"]
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36"}
+session = requests.Session()
+session.headers.update(headers)
 
+# 预编译所有正则表达式
+P_TAG_PATTERN = re.compile(r'<p*>.*?</p>', re.DOTALL)
+CODE_TAG_PATTERN = re.compile(r'<code>.*?</code>', re.DOTALL)
+URL_PATTERN = re.compile(r'http.*?txt', re.DOTALL)
+A_TAG_PATTERN = re.compile(r'<a[^r][^>]*>.*?</a>', re.DOTALL)
+HREF_PATTERN_QUOTE = re.compile(r'href=[\'"].*?[\'"]', re.DOTALL)
+HREF_PATTERN_SPACE = re.compile(r'href=.*? ', re.DOTALL)
+PROTOCOL_PATTERN = re.compile(f'(?:{"|".join(re.escape(p) for p in PROTOCOL)}).*?[ \\n<]', re.DOTALL)
 
 def base64_decode(text):
     if any(i in text for i in PROTOCOL):
@@ -179,18 +189,13 @@ def base64_decode(text):
 
 
 def p_extract(html):
-    pattern = r'<p*>.*?</p>'
-    matches = re.findall(pattern, html, re.DOTALL)
-
-    pattern = r'<code>.*?</code>'
-    matches1 = re.findall(pattern, html, re.DOTALL)
-    return matches+matches1
+    matches = P_TAG_PATTERN.findall(html)
+    matches1 = CODE_TAG_PATTERN.findall(html)
+    return matches + matches1
 
 
 def find_urls(string):
-    pattern = r'http.*?txt'
-    matches = re.findall(pattern, string, re.DOTALL)
-    return matches
+    return URL_PATTERN.findall(string)
 
 
 def subscribe_extract(matches, domain):
@@ -206,34 +211,31 @@ def subscribe_extract(matches, domain):
 
 
 def url_extract(html):
-    pattern = r'<a[^r][^>]*>.*?</a>'
-    matches = re.findall(pattern, html, re.DOTALL)
-    return matches
+    return A_TAG_PATTERN.findall(html)
 
 
 def today_url(matches):
     for i in matches:
         if any(date in i for date in date_format):
-            pattern = r'href=[\'"].*?[\'"]'
-            href = re.findall(pattern, i, re.DOTALL)
+            href = HREF_PATTERN_QUOTE.findall(i)
             if len(href) == 0:
-                pattern = r'href=.*? '
-                href = re.findall(pattern, i, re.DOTALL)
+                href = HREF_PATTERN_SPACE.findall(i)
                 return href[0][5:-1]
             return href[0][6:-1]
+    return None
 
 
 def web_crawler(i):
-    response = requests.get(url=i['url'], headers=headers)
+    response = session.get(url=i['url'], headers=headers)
     response.encoding = response.apparent_encoding
     matches = url_extract(response.text)
     # print(response.text)
     # print(matches)
     url = today_url(matches)
-    if not url.startswith("http"):
-        url = i['url']+url
+    if url and not url.startswith("http"):
+        url = i['url'] + url
     # print(url)
-    response = requests.get(url=url, headers=headers)
+    response = session.get(url=url, headers=headers)
     matches = p_extract(response.text)
     # print(matches)
     count = subscribe_extract(matches, i['domain'])
@@ -243,7 +245,7 @@ def web_crawler(i):
 def tg_base64_decode(url, count):
     # print(url)
     try:
-        response = requests.get(url=url, headers=headers)
+        response = session.get(url=url, headers=headers)
         if response.status_code != 200:
             return None
         response.encoding = response.apparent_encoding
@@ -273,37 +275,27 @@ def tg_base64_decode(url, count):
 
 def all_url(matches):
     count = [0]
-    with ThreadPoolExecutor(max_workers=20) as executor:
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         for i in matches:
             if "http" not in i:
                 continue
             if "</a>" in i:
-                pattern = r'href=[\'"].*?[\'"]'
-                href = re.findall(pattern, i, re.DOTALL)
-                if "t.me" not in href[0][6:-1] and "telegram" not in href[0][6:-1]:
+                href = HREF_PATTERN_QUOTE.findall(i)
+                if href and "t.me" not in href[0][6:-1] and "telegram" not in href[0][6:-1]:
                     executor.submit(tg_base64_decode, href[0][6:-1], count)
-                    # tg_base64_decode(href[0][6:-1],count)
-
-                    # print(href[0][6:-1], text[:20])
-
             else:
-                # tg_base64_decode(i[6:-7],count)
                 executor.submit(tg_base64_decode, i[6:-7], count)
-                pass
-
     return count[0]
 
 
 def tg_url_extract(html):
-    pattern = r'<a[^r][^>]*>.*?</a>'
-    matches = re.findall(pattern, html, re.DOTALL)
-    pattern = r'<code>.*?</code>'
-    matches1 = re.findall(pattern, html, re.DOTALL)
-    return matches+matches1
+    matches = A_TAG_PATTERN.findall(html)
+    matches1 = CODE_TAG_PATTERN.findall(html)
+    return matches + matches1
 
 
 def tg_crawler(i):
-    response = requests.get(url=i, headers=headers)
+    response = session.get(url=i, headers=headers)
     response.encoding = response.apparent_encoding
     matches = tg_url_extract(response.text)
     count = all_url(matches)
@@ -312,14 +304,10 @@ def tg_crawler(i):
 
 def find_subscribe(url):
     count = 0
-    response = requests.get(url=url, headers=headers)
+    response = session.get(url=url, headers=headers)
     response.encoding = response.apparent_encoding
     html = response.text
-    matches_all = []
-    for i in PROTOCOL:
-        pattern = f'{i}.*?[ \\n<]'
-        matches = re.findall(pattern, html, re.DOTALL)
-        matches_all = matches_all+matches
+    matches_all = PROTOCOL_PATTERN.findall(html)
     for i in matches_all:
         if len(i) > 20:
             # print(i.strip().replace("<",""))
@@ -330,39 +318,32 @@ def find_subscribe(url):
 
 
 def save(url, file):
-    response = requests.get(url=url, headers=headers)
+    response = session.get(url=url, headers=headers)
     response.encoding = response.apparent_encoding
     subscribe = base64_decode(response.text)
     with lock:
-        print(url, subscribe[:20])
+        print(url, subscribe[:20] if subscribe else "Empty response")
         file.write(subscribe+"\n")
 
 
 if __name__ == '__main__':
     # print(date_format)
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    os.remove("subscribe")
+    os.remove("v2")
+    with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         for i in WEBSITE_CRAWLER_SOURCES:
-            # web_crawler(i)
             executor.submit(web_crawler, i)
 
-    # with ThreadPoolExecutor(max_workers=10) as executor:
         for i in TELEGRAM_SUBSCRIPTION_CHANNELS:
-            # tg_crawler(i)
             executor.submit(tg_crawler, i)
-    # for i in DIRECT_SOURCE:
-    #     find_subscribe(i)
+            
         for i in DIRECT_SOURCE:
             executor.submit(find_subscribe, i)
 
     with open("subscribe", "a", encoding="utf-8") as file:
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
             for i in URLS:
                 executor.submit(save, i, file)
-                # response = requests.get(url=i, headers=headers)
-                # response.encoding = response.apparent_encoding
-                # subscribe=base64_decode(response.text)
-                # print(i,subscribe[:20])
-                # file.write(subscribe+"\n")
 
         for i in SUBSCRIBE:
             file.write(i+"\n")
@@ -372,7 +353,6 @@ if __name__ == '__main__':
         for i in input:
             line = i.strip()
             if any(line.startswith(p) for p in PROTOCOL):
-
                 if line and line not in seen:
                     seen.add(line)
                     output.write(line+"\n")

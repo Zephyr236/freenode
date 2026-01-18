@@ -339,7 +339,7 @@ if __name__ == '__main__':
             executor.submit(find_subscribe, i)
 
     with open("subscribe","a",encoding="utf-8") as file:
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=30) as executor:
             for i in URLS:
                 executor.submit(save, i,file)
                 # response = requests.get(url=i, headers=headers)

@@ -273,7 +273,7 @@ def tg_base64_decode(url, count):
 
 def all_url(matches):
     count = [0]
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=20) as executor:
         for i in matches:
             if "http" not in i:
                 continue

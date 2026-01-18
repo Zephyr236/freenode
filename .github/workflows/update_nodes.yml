@@ -37,7 +37,7 @@ jobs:
         unzip -o Xray-knife-linux-64.zip
         chmod 777 xray-knife
         ./xray-knife http -f v2 --speedtest --sort -o result.txt -t 1000 > /dev/null
-        cat result.txt
+        base64 -w 0 v2 > v2.txt
 
     - name: Commit changes
       run: |

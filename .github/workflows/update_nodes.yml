@@ -27,6 +27,8 @@ jobs:
       run: pip install requests beautifulsoup4
 
     - name: Run node crawler
+      env:
+        PYTHONUNBUFFERED: 1
       run: python main.py
 
     - name: Check node

@@ -245,7 +245,7 @@ def web_crawler(i):
 def tg_base64_decode(url, count):
     # print(url)
     try:
-        response = session.get(url=url, headers=headers)
+        response = session.get(url=url, headers=headers,timeout=10)
         if response.status_code != 200:
             return None
         response.encoding = response.apparent_encoding
@@ -295,7 +295,7 @@ def tg_url_extract(html):
 
 
 def tg_crawler(i):
-    response = session.get(url=i, headers=headers)
+    response = session.get(url=i, headers=headers, timeout=10)
     response.encoding = response.apparent_encoding
     matches = tg_url_extract(response.text)
     count = all_url(matches)

@@ -43,6 +43,6 @@ jobs:
       run: |
         git config --local user.name 'github-actions'
         git config --local user.email 'github-actions@github.com'
-        git add v2.txt
+        git add v2.txt v2
         git commit -m "Update nodes $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
         git push
